@@ -1,4 +1,4 @@
-cat << 'EOF' > README.md
+
 # 🎉 Base de Datos - Migraciones
 
 ¡Bienvenidos al repositorio de migraciones de la base de datos!  
@@ -66,3 +66,4 @@ Sistema Gestor de Base de Datos
 Base de datos MySQL/PostgreSQL
 
 Permisos de ejecución para scripts de migración
+
