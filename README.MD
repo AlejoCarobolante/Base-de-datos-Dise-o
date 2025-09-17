@@ -67,4 +67,4 @@ Base de datos MySQL/PostgreSQL
 
 Permisos de ejecución para scripts de migración
 
-![Sneaky Peaky ](files/image.png)
+![Sneaky Peaky ](files/sg2.png)
