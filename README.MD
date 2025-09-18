@@ -89,5 +89,3 @@ Permisos de ejecución para scripts de migración
         * ProcesoSeleccionProyectoPuesto UNIQUE (OIDProcesoSeleccion, OIDProyectoPuesto)
         * CarreraUniversidad UNIQUE (OIDCarrera, OIDUniversidad)
         * ProyectoUniversidad UNIQUE (OIDProyecto, OIDUniversidad)
-
-![En Honor a:  ](files/image.png)
