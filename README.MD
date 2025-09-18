@@ -40,23 +40,23 @@ Estas migraciones aseguran que todos los miembros del grupo **Hologram** trabaje
 
 * Objetivo: Mantener la base de datos sincronizada y organizada para todos los miembros del grupo 🎯
 
-##🤝 Contribuciones
+## 🤝 Contribuciones
 
 Si quieres ayudar o proponer mejoras, coordina con los miembros del grupo Hologram antes de hacer un pull request ✨
 
-##🏗️ Estructura de carpetas
+### 🏗️ Estructura de carpetas
 Base-de-datos-Dise-o/
 │
 ├── migrations/       # Migraciones de la base de datos
 ├── scripts/          # Scripts adicionales
 └── README.md         # Este archivo
 
-##🎨 Nota
+## 🎨 Nota
 
 Este repositorio está pensado para aprender, compartir y mantener la base de datos de forma divertida y ordenada.
 ¡A disfrutar del código y las migraciones! 💻🎈
 
-##🛠️ Requisitos
+#### 🛠️ Requisitos
 
 Docker
     MySQL pulleado
@@ -89,3 +89,5 @@ Permisos de ejecución para scripts de migración
         * ProcesoSeleccionProyectoPuesto UNIQUE (OIDProcesoSeleccion, OIDProyectoPuesto)
         * CarreraUniversidad UNIQUE (OIDCarrera, OIDUniversidad)
         * ProyectoUniversidad UNIQUE (OIDProyecto, OIDUniversidad)
+
+![En Honor a:  ](files/image.png)
