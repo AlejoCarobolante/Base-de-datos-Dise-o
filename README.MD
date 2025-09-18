@@ -68,3 +68,24 @@ Base de datos MySQL/PostgreSQL
 Permisos de ejecución para scripts de migración
 
 ![Sneaky Peaky ](files/sg2.png)
+
+##### Funcionalidades implementadas en las migraciones
+# Triggers
+*  Se implementan triggers para los siguientes casos:
+    1. Se plasma la lógica de los DTE en los triggers: los cambios de estado sólo se pueden dar entre estados permitidos
+    2. Se trabaja con las fechas de baja: cuando una entidad está dada de baja, no se puede volver a setear su fecha de baja
+    3. Se trabaja con los inserts
+        * En el caso de ProyectoPuestoCarrera, cuando se hace un INSERT y no se explicita el Plan de Estudios, la fila se crea con el plan de estudios vigente relacionado a la carrera indicada
+        * También en el caso de ProyectoPuestoCarrera, cuando se hace un INSERT y se indica una Carrera cuya fecha de Baja es distinta de NULL, se muestra un error que indica que no se puede crear la instancia relacionada a una Carrera dada de baja
+
+# Constraints
+* Se implementan restricciones al momento de la creación de entidades intermedias:
+    1. Se establece que las claves (que a nivel de claves de negocio son compuestas) son únicas, por lo cual no va a haber dos instancias de una tabla intermedia relacionadas a las mismas instancias de tablas del negocio:
+        * ProyectoPuesto: UNIQUE (OIDProyecto, OIDPuesto)
+        * ProyectoPuestoCarrera UNIQUE (OIDProyectoPuesto, OIDCarrera, OIDCarreraPlanEstudios)
+        * EstudianteCarrera UNIQUE (OIDEstudiante, OIDCarrera, OIDCarreraPlanEstudios, OIDEstudianteUniversidad, OIDCarreraUniversidad)
+        * EstudianteUniversidad UNIQUE (OIDEstudiante, OIDUniversidad)
+        * ProcesoSeleccionPostulacion UNIQUE (OIDProcesoSeleccionProyectoPuesto, OIDPostulacion)
+        * ProcesoSeleccionProyectoPuesto UNIQUE (OIDProcesoSeleccion, OIDProyectoPuesto)
+        * CarreraUniversidad UNIQUE (OIDCarrera, OIDUniversidad)
+        * ProyectoUniversidad UNIQUE (OIDProyecto, OIDUniversidad)
