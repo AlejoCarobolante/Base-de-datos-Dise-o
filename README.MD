@@ -56,7 +56,7 @@ Base-de-datos-Dise-o/
 Este repositorio está pensado para aprender, compartir y mantener la base de datos de forma divertida y ordenada.
 ¡A disfrutar del código y las migraciones! 💻🎈
 
-#### 🛠️ Requisitos
+### 🛠️ Requisitos
 
 Docker
     MySQL pulleado
@@ -69,16 +69,9 @@ Permisos de ejecución para scripts de migración
 
 ![Sneaky Peaky ](files/sg2.png)
 
-##### Funcionalidades implementadas en las migraciones
-# Triggers
-*  Se implementan triggers para los siguientes casos:
-    1. Se plasma la lógica de los DTE en los triggers: los cambios de estado sólo se pueden dar entre estados permitidos
-    2. Se trabaja con las fechas de baja: cuando una entidad está dada de baja, no se puede volver a setear su fecha de baja
-    3. Se trabaja con los inserts
-        * En el caso de ProyectoPuestoCarrera, cuando se hace un INSERT y no se explicita el Plan de Estudios, la fila se crea con el plan de estudios vigente relacionado a la carrera indicada
-        * También en el caso de ProyectoPuestoCarrera, cuando se hace un INSERT y se indica una Carrera cuya fecha de Baja es distinta de NULL, se muestra un error que indica que no se puede crear la instancia relacionada a una Carrera dada de baja
+# Funcionalidades implementadas en las migraciones
 
-# Constraints
+## Constraints
 * Se implementan restricciones al momento de la creación de entidades intermedias:
     1. Se establece que las claves (que a nivel de claves de negocio son compuestas) son únicas, por lo cual no va a haber dos instancias de una tabla intermedia relacionadas a las mismas instancias de tablas del negocio:
         * ProyectoPuesto: UNIQUE (OIDProyecto, OIDPuesto)
@@ -90,4 +83,74 @@ Permisos de ejecución para scripts de migración
         * CarreraUniversidad UNIQUE (OIDCarrera, OIDUniversidad)
         * ProyectoUniversidad UNIQUE (OIDProyecto, OIDUniversidad)
 
-![En Honor a:  ](files/image.png)
+
+## Triggers de la Base de Datos
+
+Este documento describe los triggers implementados en la base de datos, su propósito y comportamiento.
+
+---
+
+### 1. Triggers de "baja" de entidades
+
+Estos triggers evitan que se vuelva a dar de baja una entidad si ya tiene una fecha de baja registrada.
+
+| Trigger | Tabla | Descripción |
+|---------|-------|-------------|
+| `trg_check_baja_carrera` | Carrera | Evita volver a dar de baja una carrera si `fechaBajaCarrera` no cambia. |
+| `trg_check_baja_planestudio` | CarreraPlanEstudios | Evita volver a dar de baja un plan de estudios si `fechaBajaPlanEstudio` no cambia. |
+| `trg_check_baja_empresa` | Empresa | Evita volver a dar de baja una empresa si `fechaBajaEmpresa` no cambia. |
+| `trg_check_baja_estadocontrato` | EstadoContrato | Evita volver a dar de baja un estado de contrato. |
+| `trg_check_baja_estadoestudiantecarrera` | EstadoEstudianteCarrera | Evita volver a dar de baja el estado de un estudiante en una carrera. |
+| `trg_check_baja_estadopostulacion` | EstadoPostulacion | Evita volver a dar de baja un estado de postulación. |
+| `trg_check_baja_estadoprocesoseleccion` | EstadoProcesoSeleccion | Evita volver a dar de baja un estado de proceso de selección. |
+| `trg_check_baja_estadoproyecto` | EstadoProyecto | Evita volver a dar de baja un estado de proyecto. |
+| `trg_check_baja_estudiante` | Estudiante | Evita volver a dar de baja un estudiante. |
+| `trg_check_baja_proyectopuesto` | ProyectoPuesto | Evita volver a dar de baja un proyecto puesto. |
+| `trg_check_baja_proyectopuestocarrera` | ProyectoPuestoCarrera | Evita volver a dar de baja un proyecto puesto-carrera. |
+| `trg_check_baja_puesto` | Puesto | Evita volver a dar de baja un puesto. |
+| `trg_check_baja_universidad` | Universidad | Evita volver a dar de baja una universidad. |
+
+---
+
+### 2. Triggers de validación de postulaciones
+
+| Trigger | Tabla | Descripción |
+|---------|-------|-------------|
+| `trg_validar_postulacion_cant_materias` | Postulacion (INSERT) | Valida que el estudiante cumpla la cantidad mínima de materias aprobadas y regulares requeridas. |
+| `trg_ValidarMaxPostulaciones` | Postulacion (INSERT) | Verifica que el número de postulaciones a un puesto no exceda el máximo permitido. |
+| `trg_ValidarEstadoProyectoParaPostulacion` | Postulacion (INSERT) | Solo permite postulaciones a proyectos en estado 2 (activo). |
+| `trg_AutoActualizarEstadoProyecto` | Postulacion (AFTER INSERT) | Actualiza el proyecto a estado 3 (iniciado) si todos los puestos cumplen la cantidad correcta de postulaciones. |
+| `trg_check_estado_postulacion` | PostulacionEstado (INSERT) | Valida que los cambios de estado de una postulación sean válidos, no repetidos y dentro del flujo permitido. |
+| `trg_check_estado_proceso_postulacion` | ProcesoSeleccionEstado (UPDATE) | Valida que los cambios de estado de un proceso de selección sean válidos y respeten el flujo permitido. |
+
+---
+
+### 3. Triggers de validación y control de proyectos
+
+| Trigger | Tabla | Descripción |
+|---------|-------|-------------|
+| `trg_check_creacion_proyecto` | Proyecto (INSERT) | Asigna estado 1 (creado) si no se especifica y valida que el proyecto se cree solo en estado 1. |
+| `trg_check_estado_proyecto` | Proyecto (UPDATE) | Valida las transiciones de estado del proyecto y evita repetición del mismo estado. |
+| `trg_check_iniciar_proyecto_pp_ppc_notnull` | Proyecto (UPDATE) | Antes de iniciar un proyecto (estado 2), verifica que haya al menos un ProyectoPuesto y ProyectoPuestoCarrera activos. |
+| `trg_ValidarCambioEstadoProyecto` | Proyecto (UPDATE) | Solo permite pasar a estado 3 si todos los puestos cumplen la cantidad de postulaciones necesarias. |
+
+---
+
+### 4. Triggers de ProyectoPuesto y ProyectoPuestoCarrera
+
+| Trigger | Tabla | Descripción |
+|---------|-------|-------------|
+| `trg_proyectopuesto_insert_proyecto_creado` | ProyectoPuesto (INSERT) | Solo permite crear un ProyectoPuesto si el proyecto está en estado 1 (creado). |
+| `trg_proyectopuesto_update_proyecto_creado` | ProyectoPuesto (UPDATE) | Solo permite modificar un ProyectoPuesto si el proyecto está en estado 1 (creado). |
+| `trg_evitar_proyectopuestocarrera_con_carrera_baja` | ProyectoPuestoCarrera (INSERT) | Impide crear un ProyectoPuestoCarrera si la carrera está dada de baja. |
+| `trg_asignar_plan_estudios_vigente` | ProyectoPuestoCarrera (INSERT) | Asigna automáticamente el plan de estudios vigente si no se especifica. |
+| `trg_proyectopuestocarrera_insert_proyecto_alta` | ProyectoPuestoCarrera (INSERT) | Solo permite crear un ProyectoPuestoCarrera si el proyecto está en estado 1 (creado). |
+| `trg_proyectopuestocarrera_update_proyecto_alta` | ProyectoPuestoCarrera (UPDATE) | Solo permite modificar un ProyectoPuestoCarrera si el proyecto está en estado 1 (creado). |
+
+---
+
+#### Resumen general
+
+- Los triggers de **baja** previenen duplicaciones de baja en las entidades.  
+- Los triggers de **postulación** validan requisitos de materias, estados de proyectos y transiciones de estado.  
+- Los triggers de **proyectos y puestos** controlan la creación, modificación y transición de estados, asegurando consistencia en los datos relacionados (puestos, carreras, planes de estudios).  
