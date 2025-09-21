@@ -1,8 +1,10 @@
 
-# 🎉 Base de Datos - Migraciones
+#  Base de Datos - Migraciones
 
 ¡Bienvenidos al repositorio de migraciones de la base de datos!  
 Este proyecto pertenece al grupo **Hologram** del curso **Diseño de Sistemas 2025** 🚀
+
+![Logo ](files/logo.png)
 
 ---
 
@@ -67,7 +69,7 @@ Base de datos MySQL/PostgreSQL
 
 Permisos de ejecución para scripts de migración
 
-![Sneaky Peaky ](files/sg2.png)
+![The Boss ](files/tanen.png)
 
 # Funcionalidades implementadas en las migraciones
 
