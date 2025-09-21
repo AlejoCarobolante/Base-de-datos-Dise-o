@@ -133,6 +133,7 @@ Estos triggers evitan que se vuelva a dar de baja una entidad si ya tiene una fe
 | `trg_check_estado_proyecto` | Proyecto (UPDATE) | Valida las transiciones de estado del proyecto y evita repetición del mismo estado. |
 | `trg_check_iniciar_proyecto_pp_ppc_notnull` | Proyecto (UPDATE) | Antes de iniciar un proyecto (estado 2), verifica que haya al menos un ProyectoPuesto y ProyectoPuestoCarrera activos. |
 | `trg_ValidarCambioEstadoProyecto` | Proyecto (UPDATE) | Solo permite pasar a estado 3 si todos los puestos cumplen la cantidad de postulaciones necesarias. En caso de no cumplirse, la fecha de inicio del Proyecto se posterga una semana. |
+| `trg_check_creacion_proyecto` | Proyecto (UPDATE) | Cuando se hace inicia el Proyecto (OIDEstadoProyecto  2), la fechaInicioPostulaciones se define automáticamente como la fecha actual. |
 
 ---
 
