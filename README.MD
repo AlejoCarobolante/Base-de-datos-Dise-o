@@ -120,10 +120,14 @@ Estos triggers evitan que se vuelva a dar de baja una entidad si ya tiene una fe
 |---------|-------|-------------|
 | `trg_validar_postulacion_cant_materias` | Postulacion (INSERT) | Valida que el estudiante cumpla la cantidad mínima de materias aprobadas y regulares requeridas. |
 | `trg_ValidarMaxPostulaciones` | Postulacion (INSERT) | Verifica que el número de postulaciones a un puesto no exceda el máximo permitido. |
-| `trg_ValidarEstadoProyectoParaPostulacion` | Postulacion (INSERT) | Solo permite postulaciones a proyectos en estado 2 (activo). |
-| `trg_AutoActualizarEstadoProyecto` | Postulacion (AFTER INSERT) | Actualiza el proyecto a estado 3 (iniciado) si todos los puestos cumplen la cantidad correcta de postulaciones. |
+| `trg_ValidarEstadoProyectoParaPostulacion` | Postulacion (INSERT) | Solo permite postulaciones a proyectos en estado 2 (Iniciado). |
+| `trg_AutoActualizarEstadoProyecto` | Postulacion (AFTER INSERT) | Actualiza el proyecto a estado 3 (En Evaluacion) si todos los puestos cumplen la cantidad correcta de postulaciones. |
 | `trg_check_estado_postulacion` | PostulacionEstado (INSERT) | Valida que los cambios de estado de una postulación sean válidos, no repetidos y dentro del flujo permitido. |
 | `trg_check_estado_proceso_postulacion` | ProcesoSeleccionEstado (UPDATE) | Valida que los cambios de estado de un proceso de selección sean válidos y respeten el flujo permitido. |
+| `trg_ps_estado_vs_proyecto_ins` | ProcesoSeleccionEstado (INSERT) | Permite cambios de estado de un proceso de seleccion a "Simulado antes Finalizar Postulaciones" solo si el Proyecto está en estado "Iniciado", y a "Simulado despues Finalizar Postulaciones" solo si el Proyecto está en estado "En Evaluacion" |
+| `trg_pp_activo_para_postulacion` | Postulacion (INSERT) | Evita que se realice una postulacion a un ProyectoPuesto dado de baja |
+| `trg_estudiante_carrera_habilitada` | Postulacion (INSERT) | Valida que la carrera del Estudiante esté habilitada para el Puesto |
+| `trg_proyecto_pertenece_uni_est` | Postulacion (INSERT) | Valida que el Proyecto pertenezca a alguna Universidad del Estudiante |
 
 ---
 
