@@ -70,7 +70,7 @@ Base de datos MySQL/PostgreSQL
 Permisos de ejecución para scripts de migración
 
 ![The Boss ](files/tanen.jpg)
-![The Boss ](files/assalamualaikum.jpg)
+![The Boss ](files/bismillah.png)
 
 # Funcionalidades implementadas en las migraciones
 
