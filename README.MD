@@ -156,6 +156,28 @@ Estos triggers evitan que se vuelva a dar de baja una entidad si ya tiene una fe
 | `trg_proyectopuestocarrera_insert_proyecto_alta`    | ProyectoPuestoCarrera (INSERT) | Solo permite crear un ProyectoPuestoCarrera si el proyecto está en estado 1 (Creado).               |
 | `trg_proyectopuestocarrera_update_proyecto_alta`    | ProyectoPuestoCarrera (UPDATE) | Solo permite modificar un ProyectoPuestoCarrera si el proyecto está en estado 1 (Creado).           |
 
+## 5. Triggers de ProcesoSeleccion
+| Trigger                      | Tabla            | Descripción                                                                                     |
+| ---------------------------- | ---------------- | ----------------------------------------------------------------------------------------------- |
+| `trg_asignar_numero_proceso` | ProcesoSeleccion | Asigna automáticamente el `numeroProceso` al insertar un nuevo registro, basado en el proyecto. |
+
+
+## Unique Keys
+
+| Nombre UNIQUE KEY                      | Tabla                       | Columnas                                                                                           | Descripción                                                                  |
+| -------------------------------------- | --------------------------- | -------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `uq_carrera_universidad`               | CarreraUniversidad          | OIDCarrera, OIDUniversidad                                                                         | Garantiza que no haya duplicados entre carrera y universidad.                |
+| `uq_estudiante_carrera`                | EstudianteCarrera           | OIDEstudiante, OIDCarrera, OIDCarreraPlanEstudios, OIDEstudianteUniversidad, OIDCarreraUniversidad | Evita duplicados en la asignación de estudiantes a carreras y universidades. |
+| `uq_estudiante_universidad`            | EstudianteUniversidad       | OIDEstudiante, OIDUniversidad                                                                      | Evita duplicados de estudiantes en la misma universidad.                     |
+| `uq_proceso_seleccion_postulacion`     | ProcesoSeleccionPostulacion | OIDProcesoSeleccionProyectoPuesto, OIDPostulacion                                                  | Evita duplicados entre un proceso de selección y su postulante.              |
+| `uq_proceso_seleccion_proyecto_puesto` | ProcesoSeleccion            | OIDProcesoSeleccion, OIDProyectoPuesto                                                             | Garantiza que un proyecto puesto solo esté una vez por proceso de selección. |
+| `uq_proyecto`                          | Proyecto                    | numeroProyecto, nombreProyecto                                                                     | Evita duplicados de proyectos con mismo número y nombre.                     |
+| `uq_proyecto_puesto`                   | ProyectoPuesto              | OIDProyecto, OIDPuesto                                                                             | Evita duplicados de puestos dentro de un mismo proyecto.                     |
+| `uq_proyecto_puesto_carrera`           | ProyectoPuestoCarrera       | OIDProyectoPuesto, OIDCarrera, OIDCarreraPlanEstudio                                               | Evita duplicados de carreras asociadas a un puesto de proyecto.              |
+| `uq_proyecto_universidad`              | ProyectoUniversidad         | OIDProyecto, OIDUniversidad                                                                        | Evita duplicados de proyectos asociados a universidades.                     |
+| `uq_proyecto_numero`                   | ProcesoSeleccion            | OIDProyecto, numeroProceso                                                                         | Garantiza que cada proyecto no tenga dos procesos con el mismo número.       |
+
+
 
 ---
 
