@@ -70,6 +70,7 @@ Base de datos MySQL/PostgreSQL
 Permisos de ejecución para scripts de migración
 
 ![The Boss ](files/tanen.jpg)
+![The Boss ](files/assalamualaikum.jpg)
 
 # Funcionalidades implementadas en las migraciones
 
@@ -186,3 +187,4 @@ Estos triggers evitan que se vuelva a dar de baja una entidad si ya tiene una fe
 - Los triggers de **baja** previenen duplicaciones de baja en las entidades.  
 - Los triggers de **postulación** validan requisitos de materias, estados de proyectos y transiciones de estado.  
 - Los triggers de **proyectos y puestos** controlan la creación, modificación y transición de estados, asegurando consistencia en los datos relacionados (puestos, carreras, planes de estudios).  
+
