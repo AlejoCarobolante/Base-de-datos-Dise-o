@@ -130,7 +130,7 @@ Estos triggers evitan que se vuelva a dar de baja una entidad si ya tiene una fe
 | `trg_check_estado_postulacion`             | PostulacionEstado (INSERT)      | Valida que los cambios de estado de una postulación sean válidos, no repetidos y dentro del flujo permitido.                                                                                                                                            |
 | `trg_check_estado_proceso_postulacion`     | ProcesoSeleccionEstado (UPDATE) | Valida que los cambios de estado de un proceso de selección sean válidos y respeten el flujo permitido.                                                                                                                                                 |
 | `trg_ps_estado_vs_proyecto_ins`            | ProcesoSeleccionEstado (INSERT) | Permite cambios de estado de un proceso de selección a *Simulado antes de Finalizar Postulaciones* solo si el proyecto está en estado *Iniciado*, y a *Simulado después de Finalizar Postulaciones* solo si el proyecto está en estado *En Evaluación*. |
-
+| `trg_aviso_proyecto_completo`            | Postulacion (INSERT) | El trigger trg_aviso_proyecto_completo se ejecuta después de insertar una nueva postulación y verifica si, con esa inserción, todos los puestos del proyecto alcanzaron su cantidad máxima de postulaciones; si es así, lanza un aviso indicando que el proyecto quedó completamente cubierto. |
 
 ---
 
