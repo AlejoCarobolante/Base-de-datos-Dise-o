@@ -1,0 +1,4 @@
+# Forzar a GitHub a reconocer todos los archivos .sql como código SQL
+*.sql linguist-language=SQL
+*.sql -linguist-generated
+*.sql linguist-detectable=true
