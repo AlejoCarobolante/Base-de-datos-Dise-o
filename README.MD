@@ -160,7 +160,9 @@ Estos triggers evitan que se vuelva a dar de baja una entidad si ya tiene una fe
 ## 5. Triggers de ProcesoSeleccion
 | Trigger                      | Tabla            | Descripción                                                                                     |
 | ---------------------------- | ---------------- | ----------------------------------------------------------------------------------------------- |
-| `trg_asignar_numero_proceso` | ProcesoSeleccion | Asigna automáticamente el `numeroProceso` al insertar un nuevo registro, basado en el proyecto. |
+| `trg_asignar_numero_proceso` | ProcesoSeleccion (INSERT) | Asigna automáticamente el `numeroProceso` al insertar un nuevo registro, basado en el proyecto. |
+| `trg_SetcodProcesoSeleccionPostulacion` | ProcesoSeleccionPostulacion (INSERT) | Asigna automáticamente el `codProcesoSeleccionPostulacion` al insertar un nuevo registro, basado en el ProcesoSeleccionProyectoPuesto. |
+| `trg_SetNumeroProcesoPostulacion` | ProcesoSeleccionProyectoPuesto (INSERT) | Asigna automáticamente el `numeroProcesoPostulacion` al insertar un nuevo registro, basado en el ProcesoSeleccion. |
 
 
 ## Unique Keys
