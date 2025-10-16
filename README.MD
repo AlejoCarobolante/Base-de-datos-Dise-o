@@ -142,7 +142,7 @@ Estos triggers evitan que se vuelva a dar de baja una entidad si ya tiene una fe
 | `trg_check_estado_proyecto`                 | Proyecto (UPDATE) | Valida las transiciones de estado del proyecto y evita repetir el mismo estado.                                                                                        |
 | `trg_check_iniciar_proyecto_pp_ppc_notnull` | Proyecto (UPDATE) | Antes de iniciar un proyecto (estado 2), verifica que haya al menos un ProyectoPuesto y un ProyectoPuestoCarrera activos.                                              |
 | `trg_ValidarCambioEstadoProyecto`               | Proyecto (UPDATE) | Este trigger se ejecuta antes de actualizar un proyecto. Si se intenta cambiar su estado a 3 (EN EVALUACIÓN), valida que todos los puestos del proyecto tengan al menos la cantidad mínima de postulaciones. Si algún puesto no cumple, el proyecto se pasa automáticamente a estado 4 (suspendido) y se lanza un mensaje indicando qué puestos tienen postulaciones insuficientes                                                                |
-
+| `trg_generar_numero_proyecto`               | Proyecto (INSERT) | Asigna al campo numeroProyecto un valor formado por el prefijo "PRJ" seguido del OIDProyecto recién generado, asegurando un identificador legible y único.                                                                |
 
 ---
 
