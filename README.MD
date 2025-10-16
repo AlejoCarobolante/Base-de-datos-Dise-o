@@ -156,6 +156,7 @@ Estos triggers evitan que se vuelva a dar de baja una entidad si ya tiene una fe
 | `trg_asignar_plan_estudios_vigente`                 | ProyectoPuestoCarrera (INSERT) | Asigna automáticamente el plan de estudios vigente si no se especifica.                             |
 | `trg_proyectopuestocarrera_insert_proyecto_alta`    | ProyectoPuestoCarrera (INSERT) | Solo permite crear un ProyectoPuestoCarrera si el proyecto está en estado 1 (Creado).               |
 | `trg_proyectopuestocarrera_update_proyecto_alta`    | ProyectoPuestoCarrera (UPDATE) | Solo permite modificar un ProyectoPuestoCarrera si el proyecto está en estado 1 (Creado).           |
+| `trg_generar_cod_proyecto_puesto`    | ProyectoPuesto(INSERT) | Asigna al campo codProyectoPuesto un valor formado por el prefijo "PP" seguido del OIDProyectoPuesto recién generado, asegurando un identificador legible y único.           |
 
 ## 5. Triggers de ProcesoSeleccion
 | Trigger                      | Tabla            | Descripción                                                                                     |
