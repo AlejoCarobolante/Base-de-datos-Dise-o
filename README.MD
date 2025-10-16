@@ -131,7 +131,7 @@ Estos triggers evitan que se vuelva a dar de baja una entidad si ya tiene una fe
 | `trg_check_estado_proceso_postulacion`     | ProcesoSeleccionEstado (UPDATE) | Valida que los cambios de estado de un proceso de selección sean válidos y respeten el flujo permitido.                                                                                                                                                 |
 | `trg_ps_estado_vs_proyecto_ins`            | ProcesoSeleccionEstado (INSERT) | Permite cambios de estado de un proceso de selección a *Simulado antes de Finalizar Postulaciones* solo si el proyecto está en estado *Iniciado*, y a *Simulado después de Finalizar Postulaciones* solo si el proyecto está en estado *En Evaluación*. |
 | `trg_aviso_proyecto_completo`            | Postulacion (INSERT) | El trigger trg_aviso_proyecto_completo se ejecuta después de insertar una nueva postulación y verifica si, con esa inserción, todos los puestos del proyecto alcanzaron su cantidad máxima de postulaciones; si es así, lanza un aviso indicando que el proyecto quedó completamente cubierto. |
-| `trg_generar_numero_postulacion`            | Postulacion (INSERT) | Asigna al campo numeroPostulacion un valor formado por el prefijo "PO" seguido del OIDPostulacion recién generado, asegurando un identificador legible y único.       |
+
 
 ---
 
@@ -143,7 +143,7 @@ Estos triggers evitan que se vuelva a dar de baja una entidad si ya tiene una fe
 | `trg_check_estado_proyecto`                 | Proyecto (UPDATE) | Valida las transiciones de estado del proyecto y evita repetir el mismo estado.                                                                                        |
 | `trg_check_iniciar_proyecto_pp_ppc_notnull` | Proyecto (UPDATE) | Antes de iniciar un proyecto (estado 2), verifica que haya al menos un ProyectoPuesto y un ProyectoPuestoCarrera activos.                                              |
 | `trg_ValidarCambioEstadoProyecto`               | Proyecto (UPDATE) | Este trigger se ejecuta antes de actualizar un proyecto. Si se intenta cambiar su estado a 3 (EN EVALUACIÓN), valida que todos los puestos del proyecto tengan al menos la cantidad mínima de postulaciones. Si algún puesto no cumple, el proyecto se pasa automáticamente a estado 4 (suspendido) y se lanza un mensaje indicando qué puestos tienen postulaciones insuficientes                                                                |
-| `trg_generar_numero_proyecto`               | Proyecto (INSERT) | Asigna al campo numeroProyecto un valor formado por el prefijo "PRJ" seguido del OIDProyecto recién generado, asegurando un identificador legible y único.                                                                |
+
 
 ---
 
@@ -157,14 +157,14 @@ Estos triggers evitan que se vuelva a dar de baja una entidad si ya tiene una fe
 | `trg_asignar_plan_estudios_vigente`                 | ProyectoPuestoCarrera (INSERT) | Asigna automáticamente el plan de estudios vigente si no se especifica.                             |
 | `trg_proyectopuestocarrera_insert_proyecto_alta`    | ProyectoPuestoCarrera (INSERT) | Solo permite crear un ProyectoPuestoCarrera si el proyecto está en estado 1 (Creado).               |
 | `trg_proyectopuestocarrera_update_proyecto_alta`    | ProyectoPuestoCarrera (UPDATE) | Solo permite modificar un ProyectoPuestoCarrera si el proyecto está en estado 1 (Creado).           |
-| `trg_generar_cod_proyecto_puesto`    | ProyectoPuesto(INSERT) | Asigna al campo codProyectoPuesto un valor formado por el prefijo "PP" seguido del OIDProyectoPuesto recién generado, asegurando un identificador legible y único.           |
+
 
 ## 5. Triggers de ProcesoSeleccion
 | Trigger                      | Tabla            | Descripción                                                                                     |
 | ---------------------------- | ---------------- | ----------------------------------------------------------------------------------------------- |
 | `trg_asignar_numero_proceso` | ProcesoSeleccion (INSERT) | Asigna automáticamente el `numeroProceso` al insertar un nuevo registro, basado en el proyecto. |
 | `trg_SetcodProcesoSeleccionPostulacion` | ProcesoSeleccionPostulacion (INSERT) | Asigna automáticamente el `codProcesoSeleccionPostulacion` al insertar un nuevo registro, basado en el ProcesoSeleccionProyectoPuesto. |
-| `trg_SetNumeroProcesoPostulacion` | ProcesoSeleccionProyectoPuesto (INSERT) | Asigna automáticamente el `numeroProcesoPostulacion` al insertar un nuevo registro, basado en el ProcesoSeleccion. |
+
 
 
 ## Unique Keys
