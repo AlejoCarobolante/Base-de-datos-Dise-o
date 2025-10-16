@@ -164,6 +164,7 @@ Estos triggers evitan que se vuelva a dar de baja una entidad si ya tiene una fe
 | ---------------------------- | ---------------- | ----------------------------------------------------------------------------------------------- |
 | `trg_asignar_numero_proceso` | ProcesoSeleccion (INSERT) | Asigna automáticamente el `numeroProceso` al insertar un nuevo registro, basado en el proyecto. |
 | `trg_SetcodProcesoSeleccionPostulacion` | ProcesoSeleccionPostulacion (INSERT) | Asigna automáticamente el `codProcesoSeleccionPostulacion` al insertar un nuevo registro, basado en el ProcesoSeleccionProyectoPuesto. |
+| `trg_unico_estado_definitivo` | ProcesoSeleccionEstado (INSERT) | Evita que un mismo proceso de selección tenga más de un estado definitivo. Antes de insertar un nuevo registro, verifica si ya existe un estado con código 4 para ese proceso y, de ser así, cancela la operación con un mensaje de error. |
 
 
 
