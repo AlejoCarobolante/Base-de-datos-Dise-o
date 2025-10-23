@@ -1,0 +1,1260 @@
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_check_baja_planestudio` BEFORE UPDATE ON `CarreraPlanEstudios` FOR EACH ROW BEGIN
+
+    DECLARE v_msg VARCHAR(255);
+
+    IF OLD.fechaBajaPlanEstudio = NEW.fechaBajaPlanEstudio THEN
+
+        SET v_msg = 'No se puede volver a dar de baja el Plan de Estudio';
+
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = v_msg;
+
+    END IF;
+
+END */;;
+
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_check_baja_empresa` BEFORE UPDATE ON `Empresa` FOR EACH ROW BEGIN
+
+    DECLARE v_msg VARCHAR(255);
+
+    IF OLD.fechaBajaEmpresa = NEW.fechaBajaEmpresa THEN
+
+        SET v_msg = 'No se puede volver a dar de baja la Empresa';
+
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = v_msg;
+
+    END IF;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_check_baja_estadocontrato` BEFORE UPDATE ON `EstadoContrato` FOR EACH ROW BEGIN
+
+    DECLARE v_msg VARCHAR(255);
+
+    IF OLD.fechaBajaEstadoContrato = NEW.fechaBajaEstadoContrato THEN
+
+        SET v_msg = 'No se puede volver a dar de baja el Estado de Contrato';
+
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = v_msg;
+
+    END IF;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_check_baja_estadoestudiantecarrera` BEFORE UPDATE ON `EstadoEstudianteCarrera` FOR EACH ROW BEGIN
+
+    DECLARE v_msg VARCHAR(255);
+
+    IF OLD.fechaBajaEstadoEstudianteCarrera = NEW.fechaBajaEstadoEstudianteCarrera THEN
+
+        SET v_msg = 'No se puede volver a dar de baja el Estado de Estudiante en Carrera';
+
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = v_msg;
+
+    END IF;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_check_baja_estadopostulacion` BEFORE UPDATE ON `EstadoPostulacion` FOR EACH ROW BEGIN
+
+    DECLARE v_msg VARCHAR(255);
+
+    IF OLD.fechaBajaEstadoPostulacion = NEW.fechaBajaEstadoPostulacion THEN
+
+        SET v_msg = 'No se puede volver a dar de baja el Estado de Postulación';
+
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = v_msg;
+
+    END IF;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_check_baja_estadoprocesoseleccion` BEFORE UPDATE ON `EstadoProcesoSeleccion` FOR EACH ROW BEGIN
+
+    DECLARE v_msg VARCHAR(255);
+
+    IF OLD.fechaBajaEstadoProcesoSeleccion = NEW.fechaBajaEstadoProcesoSeleccion THEN
+
+        SET v_msg = 'No se puede volver a dar de baja el Estado de Proceso de Selección';
+
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = v_msg;
+
+    END IF;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_check_baja_estadoproyecto` BEFORE UPDATE ON `EstadoProyecto` FOR EACH ROW BEGIN
+
+    DECLARE v_msg VARCHAR(255);
+
+    IF OLD.fechaBajaEstadoProyecto = NEW.fechaBajaEstadoProyecto THEN
+
+        SET v_msg = 'No se puede volver a dar de baja el Estado de Proyecto';
+
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = v_msg;
+
+    END IF;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_check_baja_estudiante` BEFORE UPDATE ON `Estudiante` FOR EACH ROW BEGIN
+
+    DECLARE v_msg VARCHAR(255);
+
+    IF OLD.fechaBajaEstudiante = NEW.fechaBajaEstudiante THEN
+
+        SET v_msg = 'No se puede volver a dar de baja el Estudiante';
+
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = v_msg;
+
+    END IF;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_ValidarEstadoProyectoParaPostulacion` BEFORE INSERT ON `Postulacion` FOR EACH ROW BEGIN
+  DECLARE v_estado INT;
+
+  SELECT pr.OIDEstadoProyecto
+    INTO v_estado
+  FROM Proyecto pr
+  WHERE pr.OIDProyecto = NEW.OIDProyecto
+  LIMIT 1;
+
+  IF v_estado IS NULL THEN
+    SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'No se ha podido encontrar el Proyecto ingresado. Intente nuevamente.';
+  END IF;
+
+  IF v_estado <> 2 THEN
+    SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'No ha sido posible crear la instancia de Postulacion. El Proyecto seleccionado no está en estado "Iniciado".';
+  END IF;
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_pp_activo_para_postulacion` BEFORE INSERT ON `Postulacion` FOR EACH ROW BEGIN
+  DECLARE v_fecha_baja DATE;
+
+  SELECT pp.fechaBajaProyectoPuesto
+    INTO v_fecha_baja
+  FROM ProyectoPuesto pp
+  WHERE pp.OIDProyectoPuesto = NEW.OIDProyectoPuesto
+  LIMIT 1;
+
+  IF v_fecha_baja IS NOT NULL THEN
+    SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'No ha sido posible crear la instancia de Postulacion. El ProyectoPuesto seleccionado se encuentra dado de baja.';
+  END IF;
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_pp_limite_postulaciones` BEFORE INSERT ON `Postulacion` FOR EACH ROW BEGIN
+
+    DECLARE v_max_postulaciones INT;
+
+    DECLARE v_postulaciones_actuales INT;
+
+
+
+    -- 1. Traer el límite definido para el ProyectoPuesto
+
+    SELECT cantidadSuPostulaciones
+
+      INTO v_max_postulaciones
+
+    FROM ProyectoPuesto
+
+    WHERE OIDProyectoPuesto = NEW.OIDProyectoPuesto
+
+    LIMIT 1;
+
+
+
+    -- 2. Contar cuántas postulaciones ya tiene ese ProyectoPuesto
+
+    SELECT COUNT(*)
+
+      INTO v_postulaciones_actuales
+
+    FROM Postulacion
+
+    WHERE OIDProyectoPuesto = NEW.OIDProyectoPuesto;
+
+
+
+    -- 3. Validar si ya alcanzó el máximo
+
+    IF v_postulaciones_actuales >= v_max_postulaciones THEN
+
+        SIGNAL SQLSTATE '45000'
+
+            SET MESSAGE_TEXT = 'No ha sido posible crear la Postulacion. El ProyectoPuesto ya alcanzó la cantidad máxima de postulaciones permitidas.';
+
+    END IF;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_estudiante_carrera_habilitada` BEFORE INSERT ON `Postulacion` FOR EACH ROW BEGIN
+
+    DECLARE v_oidCarrera INT;
+
+    DECLARE v_oidEstudiante INT;
+
+
+
+    -- 1️⃣ Verificar que el OIDEstudianteCarrera exista
+
+    IF NOT EXISTS (
+
+        SELECT 1
+
+        FROM EstudianteCarrera
+
+        WHERE OIDEstudianteCarrera = NEW.OIDEstudianteCarrera
+
+    ) THEN
+
+        SIGNAL SQLSTATE '45000'
+
+        SET MESSAGE_TEXT = 'Error: el OIDEstudianteCarrera especificado no existe.';
+
+    END IF;
+
+
+
+    -- 2️⃣ Obtener carrera y estudiante a partir del OIDEstudianteCarrera
+
+    SELECT OIDCarrera, OIDEstudiante
+
+    INTO v_oidCarrera, v_oidEstudiante
+
+    FROM EstudianteCarrera
+
+    WHERE OIDEstudianteCarrera = NEW.OIDEstudianteCarrera;
+
+
+
+    -- 3️⃣ Validar que la carrera del estudiante esté habilitada para el puesto
+
+    IF NOT EXISTS (
+
+        SELECT 1
+
+        FROM ProyectoPuestoCarrera ppc
+
+        WHERE ppc.OIDProyectoPuesto = NEW.OIDProyectoPuesto
+
+          AND ppc.OIDCarrera = v_oidCarrera
+
+    ) THEN
+
+        SIGNAL SQLSTATE '45000'
+
+        SET MESSAGE_TEXT = 'No ha sido posible crear la instancia de Postulación. El estudiante no cuenta con una carrera habilitada para el puesto.';
+
+    END IF;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_validar_postulacion_cant_materias` BEFORE INSERT ON `Postulacion` FOR EACH ROW BEGIN
+
+    DECLARE v_cantAprobReq INT;
+
+    DECLARE v_cantRegReq INT;
+
+    DECLARE v_oidCarrera INT;
+
+
+
+    -- 1️⃣ Obtener la carrera asociada al OIDEstudianteCarrera
+
+    SELECT OIDCarrera
+
+    INTO v_oidCarrera
+
+    FROM EstudianteCarrera
+
+    WHERE OIDEstudianteCarrera = NEW.OIDEstudianteCarrera;
+
+
+
+    -- 2️⃣ Traer los requisitos según el puesto y la carrera
+
+    SELECT ppc.cantMateriasAprobadasReq,
+
+           ppc.cantMateriasRegularesReq
+
+    INTO v_cantAprobReq, v_cantRegReq
+
+    FROM ProyectoPuestoCarrera ppc
+
+    WHERE ppc.OIDProyectoPuesto = NEW.OIDProyectoPuesto
+
+      AND ppc.OIDCarrera = v_oidCarrera;
+
+
+
+    -- 3️⃣ Validar materias aprobadas
+
+    IF NEW.cantMateriasAprobadas < v_cantAprobReq THEN
+
+        SIGNAL SQLSTATE '45000'
+
+        SET MESSAGE_TEXT = 'El estudiante no cumple con la cantidad mínima de materias aprobadas requeridas';
+
+    END IF;
+
+
+
+    -- 4️⃣ Validar materias regulares
+
+    IF NEW.cantMateriasRegulares < v_cantRegReq THEN
+
+        SIGNAL SQLSTATE '45000'
+
+        SET MESSAGE_TEXT = 'El estudiante no cumple con la cantidad mínima de materias regulares requeridas';
+
+    END IF;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_proyecto_pertenece_uni_est` BEFORE INSERT ON `Postulacion` FOR EACH ROW BEGIN
+
+    DECLARE v_oidEstudiante INT;
+
+
+
+    -- 1️⃣ Obtener el estudiante a partir del OIDEstudianteCarrera
+
+    SELECT OIDEstudiante
+
+    INTO v_oidEstudiante
+
+    FROM EstudianteCarrera
+
+    WHERE OIDEstudianteCarrera = NEW.OIDEstudianteCarrera;
+
+
+
+    -- 2️⃣ Validar que el proyecto pertenezca a la universidad del estudiante
+
+    IF NOT EXISTS (
+
+        SELECT 1
+
+        FROM EstudianteUniversidad eu
+
+        JOIN ProyectoUniversidad pu ON pu.OIDUniversidad = eu.OIDUniversidad
+
+        WHERE eu.OIDEstudiante = v_oidEstudiante
+
+          AND pu.OIDProyecto   = NEW.OIDProyecto
+
+    ) THEN
+
+        SIGNAL SQLSTATE '45000'
+
+        SET MESSAGE_TEXT = 'No ha sido posible crear la instancia de Postulación. El Proyecto no pertenece a la Universidad del Estudiante.';
+
+    END IF;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `validar_postulacion` BEFORE INSERT ON `Postulacion` FOR EACH ROW BEGIN
+
+    DECLARE postulacion_existente INT;
+
+    DECLARE v_oidEstudiante INT;
+
+
+
+    -- 1️⃣ Verificar que el OIDEstudianteCarrera exista
+
+    IF NOT EXISTS (
+
+        SELECT 1
+
+        FROM EstudianteCarrera
+
+        WHERE OIDEstudianteCarrera = NEW.OIDEstudianteCarrera
+
+    ) THEN
+
+        SIGNAL SQLSTATE '45000'
+
+        SET MESSAGE_TEXT = 'Error: el OIDEstudianteCarrera especificado no existe.';
+
+    END IF;
+
+
+
+    -- 2️⃣ Obtener el estudiante a partir del OIDEstudianteCarrera
+
+    SELECT OIDEstudiante
+
+    INTO v_oidEstudiante
+
+    FROM EstudianteCarrera
+
+    WHERE OIDEstudianteCarrera = NEW.OIDEstudianteCarrera;
+
+
+
+    -- 3️⃣ Verificar si ya existe una postulación para el mismo estudiante en el mismo proyecto
+
+    SELECT COUNT(*)
+
+    INTO postulacion_existente
+
+    FROM Postulacion p
+
+    JOIN EstudianteCarrera ec ON ec.OIDEstudianteCarrera = p.OIDEstudianteCarrera
+
+    WHERE p.OIDProyecto = NEW.OIDProyecto
+
+      AND ec.OIDEstudiante = v_oidEstudiante;
+
+
+
+    -- 4️⃣ Si ya tiene una postulación, bloquear el INSERT
+
+    IF postulacion_existente > 0 THEN
+
+        SIGNAL SQLSTATE '45000'
+
+        SET MESSAGE_TEXT = 'El estudiante ya tiene una postulación en este proyecto.';
+
+    END IF;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_aviso_proyecto_completo` AFTER INSERT ON `Postulacion` FOR EACH ROW BEGIN
+
+    DECLARE v_oid_proyecto INT;
+
+    DECLARE v_total_puestos INT;
+
+    DECLARE v_puestos_completos INT;
+
+
+
+    -- Obtener el proyecto asociado al puesto donde se insertó la postulación
+
+    SELECT OIDProyecto
+
+      INTO v_oid_proyecto
+
+    FROM ProyectoPuesto
+
+    WHERE OIDProyectoPuesto = NEW.OIDProyectoPuesto
+
+    LIMIT 1;
+
+
+
+    -- Contar cuántos puestos tiene el proyecto
+
+    SELECT COUNT(*) 
+
+      INTO v_total_puestos
+
+    FROM ProyectoPuesto
+
+    WHERE OIDProyecto = v_oid_proyecto;
+
+
+
+    -- Contar cuántos puestos ya están completos
+
+    SELECT COUNT(*) 
+
+      INTO v_puestos_completos
+
+    FROM ProyectoPuesto pp
+
+    WHERE pp.OIDProyecto = v_oid_proyecto
+
+      AND (
+
+        SELECT COUNT(*) 
+
+        FROM Postulacion po 
+
+        WHERE po.OIDProyectoPuesto = pp.OIDProyectoPuesto
+
+      ) >= pp.cantidadSuPostulaciones;
+
+
+
+    -- Avisar solo si justo ahora se completó TODO
+
+    IF v_total_puestos = v_puestos_completos THEN
+
+        SIGNAL SQLSTATE '01000'
+
+            SET MESSAGE_TEXT = '✅ Todos los puestos del proyecto alcanzaron su cantidad máxima de postulaciones.';
+
+    END IF;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_check_estado_postulacion` BEFORE INSERT ON `PostulacionEstado` FOR EACH ROW BEGIN
+
+    DECLARE v_msg VARCHAR(255);
+
+    DECLARE v_old_oid INT;
+
+    DECLARE v_old_nombre VARCHAR(50);
+
+    DECLARE v_new_nombre VARCHAR(50);
+
+
+
+    -- Obtener el último estado registrado antes de esta inserción
+
+    SELECT OIDEstadoPostulacion INTO v_old_oid
+
+    FROM PostulacionEstado
+
+    WHERE OIDPostulacion = NEW.OIDPostulacion
+
+      AND fechaCambioEstado < NEW.fechaCambioEstado
+
+    ORDER BY fechaCambioEstado DESC
+
+    LIMIT 1;
+
+
+
+    -- Buscar nombres de estados
+
+    SELECT nombreEstadoPostulacion INTO v_old_nombre
+
+    FROM EstadoPostulacion
+
+    WHERE OIDEstadoPostulacion = v_old_oid;
+
+
+
+    SELECT nombreEstadoPostulacion INTO v_new_nombre
+
+    FROM EstadoPostulacion
+
+    WHERE OIDEstadoPostulacion = NEW.OIDEstadoPostulacion;
+
+
+
+    -- Bloquear repetición de estado
+
+    IF v_old_oid = NEW.OIDEstadoPostulacion THEN
+
+        SET v_msg = CONCAT('La postulacion ya está en el estado "', v_new_nombre, '". No se puede repetir.');
+
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = v_msg;
+
+    END IF;
+
+
+
+    -- Validar transiciones permitidas
+
+    IF NOT (
+
+        (v_old_oid = 1 AND NEW.OIDEstadoPostulacion = 2) OR
+
+        (v_old_oid = 2 AND NEW.OIDEstadoPostulacion IN (3, 4))
+
+    ) THEN
+
+        SET v_msg = CONCAT('Transición no permitida: ', v_old_nombre, ' -> ', v_new_nombre);
+
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = v_msg;
+
+    END IF;
+
+
+
+    -- Bloquear si el estado anterior era final (3 o 4)
+
+    IF v_old_oid IN (3, 4) THEN
+
+        SET v_msg = CONCAT('El estado "', v_old_nombre, '" es final. No se permiten más cambios.');
+
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = v_msg;
+
+    END IF;
+
+
+
+    no_validation_needed: BEGIN END;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_asignar_numero_proceso` BEFORE INSERT ON `ProcesoSeleccion` FOR EACH ROW BEGIN
+
+    DECLARE v_max_numero INT DEFAULT 0;
+
+
+
+    -- Buscar el número de proceso más alto del mismo proyecto
+
+    SELECT MAX(numeroProceso)
+
+    INTO v_max_numero
+
+    FROM ProcesoSeleccion
+
+    WHERE OIDProyecto = NEW.OIDProyecto;
+
+
+
+    -- Asignar automáticamente el número de proceso
+
+    SET NEW.numeroProceso = IFNULL(v_max_numero, 0) + 1;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_ps_estado_vs_proyecto_ins` BEFORE INSERT ON `ProcesoSeleccionEstado` FOR EACH ROW BEGIN
+  DECLARE v_estado_proy INT;
+
+  SELECT pr.OIDEstadoProyecto
+    INTO v_estado_proy
+  FROM ProcesoSeleccion ps
+  JOIN Proyecto pr ON pr.OIDProyecto = ps.OIDProyecto
+  WHERE ps.OIDProcesoSeleccion = NEW.OIDProcesoSeleccion
+  LIMIT 1;
+
+  IF NEW.OIDEstadoProcesoSeleccion = 1 AND v_estado_proy <> 2 THEN
+    SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'No es posible cambiar a "Simulado antes Finalizar Postulaciones". El Proyecto no está en estado Iniciado.';
+  END IF;
+
+  IF NEW.OIDEstadoProcesoSeleccion = 2 AND v_estado_proy <> 3 THEN
+    SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'No es posible cambiar a "Simulado despues Finalizar Postulaciones". El Proyecto no está en estado En Evaluación.';
+  END IF;
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_check_estado_proceso_postulacion` BEFORE UPDATE ON `ProcesoSeleccionEstado` FOR EACH ROW BEGIN
+
+    DECLARE v_msg VARCHAR(255);
+
+    DECLARE v_old_oid INT;
+
+    DECLARE v_old_nombre VARCHAR(50);
+
+    DECLARE v_new_nombre VARCHAR(50);
+
+
+
+    -- Solo validar si el estado está siendo modificado
+
+    IF OLD.OIDEstadoProcesoSeleccion <> NEW.OIDEstadoProcesoSeleccion THEN
+
+
+
+        -- Obtener el último estado registrado antes de esta actualización
+
+        SELECT OIDEstadoProcesoSeleccion INTO v_old_oid
+
+        FROM ProcesoSeleccionEstado
+
+        WHERE OIDProcesoSeleccion = NEW.OIDProcesoSeleccion
+
+          AND fechaCambioEstadoPS < NEW.fechaCambioEstadoPS
+
+        ORDER BY fechaCambioEstadoPS DESC
+
+        LIMIT 1;
+
+
+
+        -- Buscar nombres de estados
+
+        SELECT nombreEstadoProcesoSeleccion INTO v_old_nombre
+
+        FROM EstadoProcesoSeleccion
+
+        WHERE OIDEstadoProcesoSeleccion = v_old_oid;
+
+
+
+        SELECT nombreEstadoProcesoSeleccion INTO v_new_nombre
+
+        FROM EstadoProcesoSeleccion
+
+        WHERE OIDEstadoProcesoSeleccion = NEW.OIDEstadoProcesoSeleccion;
+
+
+
+        -- Bloquear repetición de estado
+
+        IF v_old_oid = NEW.OIDEstadoProcesoSeleccion THEN
+
+            SET v_msg = CONCAT('El proceso ya está en el estado "', v_new_nombre, '". No se puede repetir.');
+
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = v_msg;
+
+        END IF;
+
+
+
+        -- Validar transiciones permitidas
+
+        IF NOT (
+
+            (v_old_oid = 1 AND NEW.OIDEstadoProcesoSeleccion = 3) OR
+
+            (v_old_oid = 2 AND NEW.OIDEstadoProcesoSeleccion = 3)
+
+        ) THEN
+
+            SET v_msg = CONCAT('Transición no permitida: ', v_old_nombre, ' -> ', v_new_nombre);
+
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = v_msg;
+
+        END IF;
+
+
+
+        -- Bloquear si el estado anterior era final (3 o 4)
+
+        IF v_old_oid IN (3, 4) THEN
+
+            SET v_msg = CONCAT('El estado "', v_old_nombre, '" es final. No se permiten más cambios.');
+
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = v_msg;
+
+        END IF;
+
+    END IF;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_SetcodProcesoSeleccionPostulacion` BEFORE INSERT ON `ProcesoSeleccionPostulacion` FOR EACH ROW BEGIN
+
+    DECLARE max_num INT;
+
+
+
+    -- Busca el número más alto actual de procesoPostulacion para este proceso de selección
+
+    SELECT COALESCE(MAX(codProcesoSeleccionPostulacion), 0)
+
+    INTO max_num
+
+    FROM ProcesoSeleccionPostulacion
+
+    WHERE OIDProcesoSeleccionProyectoPuesto = NEW.OIDProcesoSeleccionProyectoPuesto;
+
+
+
+    -- Asigna el siguiente número, reiniciando en 1 si es el primer registro del proceso
+
+    SET NEW.codProcesoSeleccionPostulacion = max_num + 1;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_SetNumeroProcesoPostulacion` BEFORE INSERT ON `ProcesoSeleccionProyectoPuesto` FOR EACH ROW BEGIN
+
+    DECLARE max_num INT;
+
+
+
+    -- Busca el número más alto actual de procesoPostulacion para este proceso de selección
+
+    SELECT COALESCE(MAX(numeroProcesoPostulacion), 0)
+
+    INTO max_num
+
+    FROM ProcesoSeleccionProyectoPuesto
+
+    WHERE OIDProcesoSeleccion = NEW.OIDProcesoSeleccion;
+
+
+
+    -- Asigna el siguiente número, reiniciando en 1 si es el primer registro del proceso
+
+    SET NEW.numeroProcesoPostulacion = max_num + 1;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_check_creacion_proyecto` BEFORE INSERT ON `Proyecto` FOR EACH ROW BEGIN
+
+    -- Si no se especifica, setear a 1
+
+    IF NEW.OIDEstadoProyecto IS NULL THEN
+
+        SET NEW.OIDEstadoProyecto = 1;
+
+    END IF;
+
+
+
+    -- Validar que no sea distinto de 1
+
+    IF NEW.OIDEstadoProyecto <> 1 THEN
+
+        SIGNAL SQLSTATE '45000'
+
+            SET MESSAGE_TEXT = 'No se puede crear un proyecto en estado distinto de creado';
+
+    END IF;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_check_estado_proyecto` BEFORE UPDATE ON `Proyecto` FOR EACH ROW BEGIN
+
+    DECLARE v_msg VARCHAR(255);
+
+    DECLARE v_old_nombre VARCHAR(50);
+
+    DECLARE v_new_nombre VARCHAR(50);
+
+
+
+    -- Validación 1: Solo ejecutar si se modifica el estado
+
+    IF OLD.OIDEstadoProyecto != NEW.OIDEstadoProyecto THEN
+
+        -- Buscar nombres de estados desde la tabla EstadoProyecto
+
+        SELECT nombreEstadoProyecto INTO v_old_nombre
+
+        FROM EstadoProyecto
+
+        WHERE OIDEstadoProyecto = OLD.OIDEstadoProyecto;
+
+
+
+        SELECT nombreEstadoProyecto INTO v_new_nombre
+
+        FROM EstadoProyecto
+
+        WHERE OIDEstadoProyecto = NEW.OIDEstadoProyecto;
+
+
+
+        -- Validación 2: Error si se intenta modificar el estado hacia sí mismo
+
+        IF OLD.OIDEstadoProyecto = NEW.OIDEstadoProyecto THEN
+
+            SIGNAL SQLSTATE '45000'
+
+            SET MESSAGE_TEXT = 'No se puede actualizar el proyecto al mismo estado.';
+
+        END IF;
+
+
+
+        -- Validación 3: Solo permitir transiciones a estados permitidos
+
+        IF NOT (
+
+            (OLD.OIDEstadoProyecto = 1 AND NEW.OIDEstadoProyecto IN (2,5)) OR
+
+            (OLD.OIDEstadoProyecto = 2 AND NEW.OIDEstadoProyecto IN (3,4,5)) OR
+
+            (OLD.OIDEstadoProyecto = 3 AND NEW.OIDEstadoProyecto IN (6,5)) OR
+
+            (OLD.OIDEstadoProyecto = 4 AND NEW.OIDEstadoProyecto IN (2,5))
+
+        ) THEN
+
+            SET v_msg = CONCAT('Transición no permitida: ', v_old_nombre, ' -> ', v_new_nombre);
+
+            SIGNAL SQLSTATE '45000'
+
+            SET MESSAGE_TEXT = v_msg;
+
+        END IF;
+
+    END IF;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_check_iniciar_proyecto_pp_ppc_notnull` BEFORE UPDATE ON `Proyecto` FOR EACH ROW BEGIN
+
+    DECLARE v_count INT;
+
+
+
+    -- Supongamos que estado = 2 significa "Iniciado"
+
+    IF NEW.OIDEstadoProyecto = 2 AND OLD.OIDEstadoProyecto <> 2 THEN
+
+
+
+        -- Verificar que exista al menos un ProyectoPuesto activo
+
+        SELECT COUNT(*)
+
+        INTO v_count
+
+        FROM ProyectoPuesto pp
+
+        WHERE pp.OIDProyecto = NEW.OIDProyecto
+
+          AND pp.fechaBajaProyectoPuesto IS NULL;
+
+
+
+        IF v_count = 0 THEN
+
+            SIGNAL SQLSTATE '45000'
+
+                SET MESSAGE_TEXT = 'No se puede iniciar el proyecto sin al menos un ProyectoPuesto activo.';
+
+        END IF;
+
+
+
+        -- Verificar que exista al menos un ProyectoPuestoCarrera activo vinculado a esos puestos
+
+        SELECT COUNT(*)
+
+        INTO v_count
+
+        FROM ProyectoPuestoCarrera ppc
+
+        INNER JOIN ProyectoPuesto pp ON pp.OIDProyectoPuesto = ppc.OIDProyectoPuesto
+
+        WHERE pp.OIDProyecto = NEW.OIDProyecto
+
+          AND pp.fechaBajaProyectoPuesto IS NULL
+
+          AND ppc.fechaBajaProyectoPuestoCarrera IS NULL;
+
+
+
+        IF v_count = 0 THEN
+
+            SIGNAL SQLSTATE '45000'
+
+                SET MESSAGE_TEXT = 'No se puede iniciar el proyecto sin al menos un ProyectoPuestoCarrera activo.';
+
+        END IF;
+
+
+
+    END IF;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_actualiza_fecha_inicio_postulaciones` BEFORE UPDATE ON `Proyecto` FOR EACH ROW BEGIN
+
+    -- Verifica que el estado cambió a 2
+
+    IF NEW.OIDEstadoProyecto = 2 AND OLD.OIDEstadoProyecto <> 2 THEN
+
+        SET NEW.fechaInicioPostulaciones = NOW();
+
+    END IF;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_ValidarCambioEstadoProyecto` BEFORE UPDATE ON `Proyecto` FOR EACH ROW BEGIN
+
+    DECLARE v_detalle_faltantes TEXT;
+
+    DECLARE v_msg VARCHAR(255);
+
+
+
+    -- Solo ejecutar si se intenta pasar a estado 3
+
+    IF NEW.OIDEstadoProyecto = 3 THEN
+
+
+
+        -- Buscar los ProyectoPuesto con menos postulaciones que vacantes
+
+        SELECT GROUP_CONCAT(
+
+                   CONCAT(
+
+                       'ProyectoPuesto ', t.OIDProyectoPuesto,
+
+                       ' tiene ', t.postulaciones,
+
+                       ' de ', t.cantidadVacantes, ' postulaciones'
+
+                   ) SEPARATOR '; '
+
+               )
+
+        INTO v_detalle_faltantes
+
+        FROM (
+
+            SELECT 
+
+                pp.OIDProyectoPuesto,
+
+                COUNT(po.OIDPostulacion) AS postulaciones,
+
+                pp.cantidadVacantes
+
+            FROM ProyectoPuesto pp
+
+            LEFT JOIN Postulacion po 
+
+                ON po.OIDProyectoPuesto = pp.OIDProyectoPuesto
+
+            WHERE pp.OIDProyecto = NEW.OIDProyecto
+
+            GROUP BY pp.OIDProyectoPuesto, pp.cantidadVacantes
+
+            HAVING COUNT(po.OIDPostulacion) < pp.cantidadVacantes
+
+        ) AS t;
+
+
+
+        -- Si hay puestos con postulaciones insuficientes
+
+        IF v_detalle_faltantes IS NOT NULL THEN
+
+            -- Cambiar el estado a 4 (no pasa a 3)
+
+            SET NEW.OIDEstadoProyecto = 4;
+
+
+
+            -- Armar mensaje corto (MySQL limita MESSAGE_TEXT a 128 chars)
+
+            SET v_msg = CONCAT(
+
+                'Proyecto pasa a estado Suspendido. Faltan postulaciones: ',
+
+                LEFT(v_detalle_faltantes, 80)
+
+            );
+
+
+
+            -- Enviar el mensaje
+
+            SIGNAL SQLSTATE '45000' 
+
+            SET MESSAGE_TEXT = v_msg;
+
+        END IF;
+
+    END IF;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_check_baja_proyectopuesto` BEFORE UPDATE ON `ProyectoPuesto` FOR EACH ROW BEGIN
+
+    DECLARE v_msg VARCHAR(255);
+
+    IF OLD.fechaBajaProyectoPuesto = NEW.fechaBajaProyectoPuesto THEN
+
+        SET v_msg = 'No se puede volver a dar de baja el Proyecto Puesto';
+
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = v_msg;
+
+    END IF;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_proyectopuesto_update_proyecto_estado` BEFORE UPDATE ON `ProyectoPuesto` FOR EACH ROW BEGIN
+
+    DECLARE v_estado INT;
+
+
+
+    SELECT OIDEstadoProyecto
+
+    INTO v_estado
+
+    FROM Proyecto
+
+    WHERE OIDProyecto = OLD.OIDProyecto;
+
+
+
+    IF v_estado <> 1 AND v_estado <> 4 THEN
+
+        SIGNAL SQLSTATE '45000'
+
+            SET MESSAGE_TEXT = 'Solo se puede MODIFICAR un ProyectoPuesto si el proyecto está en estado Creado (1) o Suspendido (4).';
+
+    END IF;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_evitar_proyectopuestocarrera_con_carrera_baja` BEFORE INSERT ON `ProyectoPuestoCarrera` FOR EACH ROW BEGIN
+
+    DECLARE v_fechaBajaCarrera DATE;
+
+
+
+    -- Obtener la fecha de baja de la carrera
+
+    SELECT fechaBajaCarrera INTO v_fechaBajaCarrera
+
+    FROM Carrera
+
+    WHERE OIDCarrera = NEW.OIDCarrera;
+
+
+
+    -- Si la carrera tiene fecha de baja, no permitir la inserción
+
+    IF v_fechaBajaCarrera IS NOT NULL THEN
+
+        SIGNAL SQLSTATE '45000'
+
+        SET MESSAGE_TEXT = 'No se puede crear un ProyectoPuestoCarrera para una carrera dada de baja.';
+
+    END IF;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_asignar_plan_estudios_vigente` BEFORE INSERT ON `ProyectoPuestoCarrera` FOR EACH ROW BEGIN
+
+    DECLARE v_plan_vigente INT;
+
+
+
+    -- Si no se ha especificado un OIDCarreraPlanEstudio, buscar el plan vigente
+
+    IF NEW.OIDCarreraPlanEstudio IS NULL THEN
+
+        -- Buscar el plan de estudios vigente para la carrera
+
+        SELECT cp.OIDCarreraPlanEstudio INTO v_plan_vigente
+
+        FROM CarreraPlanEstudios cp
+
+        JOIN CarreraUniversidad cu ON cu.OIDCarreraUniversidad = cp.OIDCarreraUniversidad
+
+        JOIN Carrera c ON c.OIDCarrera = cu.OIDCarrera
+
+        WHERE c.OIDCarrera = NEW.OIDCarrera
+
+          AND (cp.fechaFinPlanEstudios IS NULL OR cp.fechaFinPlanEstudios >= CURDATE())
+
+          AND cp.fechaInicioPlanEstudios <= CURDATE()
+
+        ORDER BY cp.fechaInicioPlanEstudios DESC
+
+        LIMIT 1;
+
+
+
+        -- Asignar el plan de estudios vigente encontrado
+
+        IF v_plan_vigente IS NOT NULL THEN
+
+            SET NEW.OIDCarreraPlanEstudio = v_plan_vigente;
+
+        ELSE
+
+            SIGNAL SQLSTATE '45000'
+
+            SET MESSAGE_TEXT = 'No se encontró un plan de estudios vigente para la carrera especificada.';
+
+        END IF;
+
+    END IF;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_proyectopuestocarrera_insert_proyecto_alta` BEFORE INSERT ON `ProyectoPuestoCarrera` FOR EACH ROW BEGIN
+
+    DECLARE v_estado INT;
+
+
+
+    SELECT p.OIDEstadoProyecto
+
+    INTO v_estado
+
+    FROM Proyecto p
+
+    INNER JOIN ProyectoPuesto pp ON pp.OIDProyectoPuesto = NEW.OIDProyectoPuesto
+
+    WHERE p.OIDProyecto = pp.OIDProyecto;
+
+
+
+    IF v_estado <> 1 THEN
+
+        SIGNAL SQLSTATE '45000'
+
+            SET MESSAGE_TEXT = 'Solo se puede CREAR un ProyectoPuestoCarrera si el proyecto está en estado Creado.';
+
+    END IF;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_check_baja_proyectopuestocarrera` BEFORE UPDATE ON `ProyectoPuestoCarrera` FOR EACH ROW BEGIN
+
+    DECLARE v_msg VARCHAR(255);
+
+    IF OLD.fechaBajaProyectoPuestoCarrera = NEW.fechaBajaProyectoPuestoCarrera THEN
+
+        SET v_msg = 'No se puede volver a dar de baja el Proyecto Puesto Carrera';
+
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = v_msg;
+
+    END IF;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_proyectopuestocarrera_update_proyecto_alta` BEFORE UPDATE ON `ProyectoPuestoCarrera` FOR EACH ROW BEGIN
+
+    DECLARE v_estado INT;
+
+
+
+    SELECT p.OIDEstadoProyecto
+
+    INTO v_estado
+
+    FROM Proyecto p
+
+    INNER JOIN ProyectoPuesto pp ON pp.OIDProyectoPuesto = OLD.OIDProyectoPuesto
+
+    WHERE p.OIDProyecto = pp.OIDProyecto;
+
+
+
+    IF v_estado <> 1 THEN
+
+        SIGNAL SQLSTATE '45000'
+
+            SET MESSAGE_TEXT = 'Solo se puede MODIFICAR un ProyectoPuestoCarrera si el proyecto está en estado Creado.';
+
+    END IF;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_check_baja_puesto` BEFORE UPDATE ON `Puesto` FOR EACH ROW BEGIN
+
+    DECLARE v_msg VARCHAR(255);
+
+    IF OLD.fechaBajaPuesto = NEW.fechaBajaPuesto THEN
+
+        SET v_msg = 'No se puede volver a dar de baja el Puesto';
+
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = v_msg;
+
+    END IF;
+
+END */;;
+
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `trg_check_baja_universidad` BEFORE UPDATE ON `Universidad` FOR EACH ROW BEGIN
+
+    DECLARE v_msg VARCHAR(255);
+
+    IF OLD.fechaBajaUniversidad = NEW.fechaBajaUniversidad THEN
+
+        SET v_msg = 'No se puede volver a dar de baja la Universidad';
+
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = v_msg;
+
+    END IF;
+
+END */;;
