@@ -112,7 +112,7 @@ Estos triggers evitan que se vuelva a dar de baja una entidad si ya tiene una fe
 | `trg_check_baja_proyectopuestocarrera`   | ProyectoPuestoCarrera   | Evita volver a dar de baja un proyecto puesto-carrera.                              |
 | `trg_check_baja_puesto`                  | Puesto                  | Evita volver a dar de baja un puesto.                                               |
 | `trg_check_baja_universidad`             | Universidad             | Evita volver a dar de baja una universidad.                                         |
-
+| `trg_check_baja_universidad`             | Universidad             | Bloquea la baja de la universidad si tiene al menos un proyecto en estado "Creado o En Evaluacion".  |
 ---
 
 ### 2. Triggers de validación de postulaciones
